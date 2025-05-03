@@ -1,5 +1,5 @@
-const char* ssid = "Wifi-Roboto";
-const char* password = "arDY1234";
+const char* ssid = "YourNetwork";
+const char* password = "YourPassword";
 
 bool swStatus = 0;
 const int swPin = 5;
