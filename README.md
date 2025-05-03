@@ -1,109 +1,103 @@
-# 🔌 ESP8266 Relay Control System with Dashboard Interface
+# 🔌 ESP8266 Wireless Relay Control System with Dashboard & ESP-NOW
 
-This project demonstrates a robust and scalable wireless relay control system using multiple ESP8266 boards. It includes an interactive web dashboard powered by **[ESPDash](https://github.com/ayushsharma82/ESP-DASH)** to monitor and control up to 16 relay outputs (8 from each board), with networking support between Node A and Node B via ESP-NOW protocol.
+This project provides a complete **wireless relay control system** using multiple ESP8266 boards. It features a real-time web-based dashboard using **[ESPDash](https://github.com/ayushsharma82/ESP-DASH)** and fast peer-to-peer communication using **ESP-NOW** protocol.
 
 ---
 
-## 📁 Project Structure
+## 🧱 Project Structure
 
 ```
+
 .
 ├── LICENSE
-├── README.md
-└── Project
-    ├── dash.ino                    # Web dashboard interface with ESPDash
-    ├── esp8266-relay-networking.ino # Relay controller with ESP-NOW communication
-    └── variable.h                  # Shared configurations, structure definitions, and UI widgets
+├── Project
+│   ├── master
+│   │   ├── dash.ino
+│   │   ├── esp8266-relay-networking.ino
+│   │   └── variable.h
+│   └── slave
+│       └── relay-client-esp8266-espnow.ino
+└── README.md
+
+```
+
+---
+
+## 🧠 System Overview
+
+- **Master (Dashboard - Node A)**:  
+  Hosts a web interface using ESPDash. Sends real-time relay control commands over ESP-NOW.
+
+- **Slave (Relay Client - Node B)**:  
+  Listens via ESP-NOW. Receives data and updates 8 relay pins based on struct-based commands.
+
+- **Communication**:  
+  Uses **ESP-NOW** for low-latency, Wi-Fi-less communication.
+
+---
+
+## 📋 Features
+
+✅ Control up to 8 relays per ESP8266 slave node  
+✅ Add more slaves with unique MAC addresses  
+✅ Web dashboard for interactive control (sliders/buttons)  
+✅ Real-time relay status sync  
+✅ Designed for reliability and expandability
+
+---
+
+## ⚙️ Requirements
+
+Install these libraries via Arduino Library Manager or manually:
+- **ESPAsyncWebServer**
+- **AsyncTCP**
+- **ESPDash**
+- **ESP-NOW (built into ESP8266 core)**
+
+---
+
+## 🚀 Getting Started
+
+### 🔧 1. Set Up the Dashboard Node (Master)
+- Open `Project/master/dash.ino`
+- Update:
+  ```cpp
+  const char* ssid = "YourSSID";
+  const char* password = "YourPassword";
+  uint8_t broadcastAddress[] = {0xXX, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX}; // Node B MAC
+  ```
+
+* Flash to an ESP8266 device. Access the IP address in browser to control relays.
+
+### 🔧 2. Set Up the Relay Node (Slave)
+
+* Open `Project/slave/relay-client-esp8266-espnow.ino`
+* Flash to the second ESP8266 (relay board)
+* Relays will auto-update based on dashboard control
+
+---
+
+## 📝 Shared Data Structure
+
+Defined in `variable.h` and used by both master and slave:
+
+```cpp
+typedef struct test_struct {
+  bool re1, re2, re3, re4, re5, re6, re7, re8;
+} test_struct;
 ```
 
 ---
 
-## 🎯 Features
+## 💡 Example Use-Cases
 
-✅ Control up to 16 relay channels (8 from each board)
-✅ Web-based control panel with **sliders** for intuitive interaction
-✅ Wireless communication between two ESP8266 boards using **ESP-NOW**
-✅ Real-time status updates and relay toggling
-✅ Support for **asynchronous web server** and **SPIFFS** for efficient UI handling
+* Smart home lighting and device automation
+* Lab experiment toggling (lights, pumps, etc.)
+* Wireless switchboard or classroom demo kits
 
 ---
 
-## 🧠 Architecture Overview
-
-* **Node A (Web Dashboard)**: Hosts the ESPDash-based UI and sends commands to Node B via ESP-NOW.
-* **Node B (Relay Receiver)**: Receives ESP-NOW messages from Node A and activates the appropriate relays.
-* **ESP-NOW**: Ensures low-latency peer-to-peer communication without requiring an external router.
-
----
-
-## 🖼️ Web Dashboard Preview
-
-> Designed using ESPDash: visually appealing, responsive, and lightweight
-
-* Sliders to activate/deactivate each relay (A1–A8, B1–B8)
-* Status reflected in real-time
-* Auto-refresh capabilities every second (`timerDelay = 1000ms`)
-
----
-
-## ⚙️ Dependencies
-
-* [ESPDash by Ayush Sharma](https://github.com/ayushsharma82/ESP-DASH)
-* ESP8266 core for Arduino (install via Board Manager)
-* ESPAsyncWebServer
-* AsyncTCP
-* SPIFFS filesystem
-
-To install libraries via Arduino Library Manager or directly:
-
-```
-ESPAsyncWebServer
-ESPAsyncTCP
-ESP-DASH
-```
-
----
-
-## 🛠️ Getting Started
-
-1. **Set WiFi Credentials** in `variable.h`:
-
-   ```cpp
-   const char* ssid = "YourNetwork";
-   const char* password = "YourPassword";
-   ```
-
-2. **Update ESP-NOW MAC Addresses** in `variable.h` to match target devices:
-
-   ```cpp
-   uint8_t broadcastAddress1[] = {0xXX, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX};
-   ```
-
-3. **Flash `dash.ino`** to Node A (dashboard master)
-   **Flash `esp8266-relay-networking.ino`** to Node B (relay receiver)
-
-4. **Connect to WiFi**, and access the ESP’s IP to open the control dashboard.
-
----
-
-## 🧾 Example Use-Cases
-
-* Smart home automation
-* Classroom or laboratory power control
-* Industrial relay control interface
-* IoT test bench with visual feedback
-
----
-
-## 🧪 Advanced Customization
-
-* Modify or extend `test_struct` in `variable.h` to include more states or devices
-* Enhance dashboard with graphs, switch toggles, or notifications
-* Integrate with MQTT or Blynk if needed for remote access beyond LAN
-
----
-
-## 📝 License
+## 🧾 License
 
 This project is licensed under the [MIT License](LICENSE).
 
@@ -111,4 +105,9 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 🙌 Credits
 
-Developed by [2black0](mailto:2black0@gmail.com) as part of IoT dashboard and relay communication exploration using ESP8266 and ESPDash.
+Created and maintained by **[2black0](mailto:2black0@gmail.com)**
+Built with ❤️ using [ESP-DASH](https://github.com/ayushsharma82/ESP-DASH) and [ESP-NOW](https://espressif-docs.readthedocs-hosted.com/projects/esp-now)
+
+---
+
+> Ready to flash your relays and go wireless? Clone, modify, and expand!
